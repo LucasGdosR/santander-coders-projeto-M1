@@ -10,7 +10,12 @@ public class Product {
         this.quantity = quantity;
         this.price = price;
     }
-
+    @Override
+    public String toString() {
+        return "Produto: " + this.getName() +
+                ", Quantidade: " + this.getQuantity() +
+                ", Preço: " + this.getPrice();
+    }
     public String getName() {
         return name;
     }
