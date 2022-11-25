@@ -85,6 +85,7 @@ public class Menu {
                 System.out.println("Entrada inválida tente novamente! \n");
             }
         }
+        name.replaceAll(";", "");
 
         while (quantity <= 0) {
             System.out.println("Certo. Qual é o estoque dele? ");
@@ -95,6 +96,7 @@ public class Menu {
                 }
             } catch (Exception e) {
                 System.out.println("Valor inválido, tente novamente! \n");
+                scanner.nextLine();
             }
         }
 
@@ -107,6 +109,7 @@ public class Menu {
                 }
             } catch (Exception e) {
                 System.out.println("Valor inválido, tente novamente");
+                scanner.nextLine();
             }
 
         }
@@ -141,6 +144,7 @@ public class Menu {
                 }
             } catch (Exception e) {
                 System.out.println("Informe um número.");
+                scanner.nextLine();
             }
         }
         Product product = getInput();
