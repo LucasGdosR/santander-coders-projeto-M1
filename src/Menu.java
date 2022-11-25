@@ -11,43 +11,9 @@ public class Menu {
     private Scanner scanner;
     private Database database;
 
-    Menu(String filePath){
-        List<Product> products = parseFile(filePath); // parseFile a implementar
+    Menu(){// parseFile a implementar
         this.scanner = new Scanner(System.in);
-        this.database = new Database(products);
-    }
-
-    private List<Product> parseFile(String filePath){
-        //Inicia uma lista com o estoque
-        List<Product> stock = new ArrayList<>();
-        try{
-            //Abre o arquivo db.txt
-            File db = new File(filePath);
-            Scanner leitor = new Scanner(db);
-            while (leitor.hasNextLine())
-            {
-                //Transforma a string data em um vetor
-                String data = leitor.nextLine();
-                String[] parts = data.split(",");
-
-                //Envia o vetor para o Product p
-                Product p = new Product(parts[0],Integer.parseInt(parts[1]),new BigDecimal(parts[2]));
-
-                //Adiciona ao arraylist
-                stock.add(p);
-            }
-            leitor.close();
-        }
-        catch(FileNotFoundException e){
-            System.out.println("Arquivo não encontrado");
-            e.printStackTrace();
-        }
-        System.out.println();
-        // Recebe o caminho para o arquivo, faz uma iteração de todas as linhas,
-        // constrói um produto com cada linha, salva cada produto em um índice de um ArrayList,
-        // retorna o ArrayList
-
-        return (stock);
+        this.database = new Database();
     }
 
     public void interact() {
@@ -77,10 +43,10 @@ public class Menu {
     private Product getInput() {
         // Faltando: tratar cada leitura do scanner para certificar que não está vazio / é número positivo
         System.out.println("Informe o nome do produto: ");
-        String name = scanner.nextLine();
+        String name = scanner.next();
         // if (name.equals(""))...
         System.out.println("Certo. Qual é o estoque dele? ");
-        Integer quantity = scanner.nextInt();
+        Integer quantity = Integer.parseInt(scanner.next());
         // if (quantity < 0)...
         System.out.println("Informe o preço unitário: ");
         BigDecimal price = BigDecimal.valueOf(scanner.nextDouble());
@@ -116,14 +82,15 @@ public class Menu {
         System.out.println("Informe o ID do produto que deseja deletar: ");
         // Checar que é um inteiro, tratar erro de out of bounds index
         Integer id = scanner.nextInt();
-        database.delete((id));
+        database.delete(id);
         System.out.println("Produto deletado com sucesso!");
     }
 
-    private void searchProduct(){
+    private void searchProduct() {
         System.out.println("Informe o nome a buscar: ");
-        String substring = scanner.nextLine();
-        database.search(substring);
+        String substring = scanner.next();
+        List<Product> products = database.search(substring);
+        System.out.println(products);
         System.out.println("Busca concluída.");
     }
     private void buyProduct(){
