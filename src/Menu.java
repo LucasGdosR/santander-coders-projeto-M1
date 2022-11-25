@@ -76,16 +76,38 @@ public class Menu {
 
     private Product getInput() {
         // Faltando: tratar cada leitura do scanner para certificar que não está vazio / é número positivo
-        System.out.println("Informe o nome do produto: ");
-        String name = scanner.nextLine();
-        // if (name.equals(""))...
-        System.out.println("Certo. Qual é o estoque dele? ");
-        Integer quantity = scanner.nextInt();
-        // if (quantity < 0)...
-        System.out.println("Informe o preço unitário: ");
-        BigDecimal price = BigDecimal.valueOf(scanner.nextDouble());
-        // if (price.compareTo(new BigDecimal(0)) == -1)
-        return new Product(name, quantity, price);
+        scanner.nextLine();
+        String name = "";
+        Integer quantity = 0;
+        BigDecimal price = new BigDecimal(0);
+
+        while (name.equals("")) {
+            System.out.println("Informe o nome do produto: ");
+            name = scanner.nextLine();
+            if (name.equals("")){
+                System.out.println("Entrada inválida tente novamente! \n");
+            }
+        }
+
+        while (quantity <= 0) {
+            System.out.println("Certo. Qual é o estoque dele? ");
+            quantity = scanner.nextInt();
+
+            if (quantity < 0) {
+                System.out.println("Valor inválido tente novamente! \n");
+            }
+        }
+
+        while (price.compareTo(new BigDecimal(0)) <= 0)  {
+            System.out.println("Informe o preço unitário: ");
+            price = BigDecimal.valueOf(scanner.nextDouble());
+
+            if (price.compareTo(new BigDecimal(0)) <= 0){
+                System.out.println("Valor inválido tente novamente");
+            }
+        }
+            return new Product(name, quantity, price);
+
     }
 
     private void createProduct() {
@@ -98,51 +120,89 @@ public class Menu {
         List<Product> products = database.getProducts();
         System.out.println("Estes são os itens: ");
         for (int i = 0; i < products.size(); i++) {
-            System.out.println(products.get(i));
+            System.out.println("Item: "+ (i + 1) + " "+ products.get(i));
 
         }
     }
 
     private void editProduct() {
+        List<Product> Psize = database.getProducts();
         System.out.println("Informe o ID do produto que deseja editar: ");
-        // Checar que é um inteiro, tratar erro de out of bounds index
+
         Integer id = scanner.nextInt();
+
+        while(id < 1 || id > (Psize.size())){
+            System.out.println("Valor inválido, insira novamente");
+            System.out.println("Informe o ID do produto que deseja editar: ");
+            id = scanner.nextInt();
+        }
+
         Product product = getInput();
-        database.edit(product, id);
-        System.out.println("Produto editado com sucesso!\nID: " + id + product.toString());
+        database.edit(product, (id - 1));
+
+
+        System.out.println("Produto editado com sucesso!\nID: " + (id) +", "+ product.toString());
     }
 
     private void deleteProduct(){
+        List<Product> Psize = database.getProducts();
         System.out.println("Informe o ID do produto que deseja deletar: ");
-        // Checar que é um inteiro, tratar erro de out of bounds index
+
         Integer id = scanner.nextInt();
-        database.delete((id));
+
+        while(id < 1 || id > (Psize.size())){
+            System.out.println("Valor inválido, insira novamente");
+            System.out.println("Informe o ID do produto que deseja deletar: ");
+            id = scanner.nextInt();
+        }
+
+        database.delete((id - 1));
         System.out.println("Produto deletado com sucesso!");
     }
 
     private void searchProduct(){
         System.out.println("Informe o nome a buscar: ");
+        scanner.nextLine();
         String substring = scanner.nextLine();
         database.search(substring);
         System.out.println("Busca concluída.");
     }
     private void buyProduct(){
+        List<Product> Psize = database.getProducts();
         List<Product> shoppingCart = new ArrayList<>();
         boolean buyMore = true;
         while (buyMore){
             System.out.println("Informe o ID do produto: ");
             // Validar que é um int, tratar erro de out of bounds
             Integer id = scanner.nextInt();
-            Product product = database.getProducts().get(id);
+
+            while(id < 1 || id > (Psize.size())){
+                System.out.println("Valor inválido, insira novamente");
+                System.out.println("Informe o ID do produto: ");
+                id = scanner.nextInt();
+            }
+
+
+            Product product = database.getProducts().get(id-1);
+
             System.out.println("Informe a quantidade do produto: ");
-            // Validar que é um int positivo
+
             Integer quantity = scanner.nextInt();
-            if (quantity > product.getQuantity())
+
+            if (quantity < 0){
+                System.out.println("Valor inválido, tente novamente!");
+            }
+
+            if (quantity > product.getQuantity()) {
                 System.out.printf("Quantidade indisponível. Temos apenas %d unidades em estoque.\n", product.getQuantity());
+                System.out.println("Compra cancelada");
+            }
             else {
                 // Falta pensar melhor neste passo. Vai ter que adicionar o nome, a quantidade, e o preço.
                 // Esta implementação passa o estoque inteiro, e não a quantidade.
+                System.out.println("COMPRA FEITA");
                 shoppingCart.add(product);
+                break;
             }
         }
         System.out.println("Confirma sua compra? S/N: ");
