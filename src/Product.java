@@ -14,19 +14,13 @@ public class Product {
     public String toString() {
         return "Produto: " + this.getName() +
                 ", Quantidade: " + this.getQuantity() +
-                ", Preço: " + this.getPrice();
+                ", Preço: R$" + this.getPrice();
     }
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 
-    public Integer getQuantity() {
-        return quantity;
-    }
+    public Integer getQuantity() { return quantity; }
 
-    public void reduceStock(Integer quantity) {
-        this.quantity -= quantity;
-    }
+    public void reduceStock(Integer quantity) { this.quantity -= quantity; }
 
     public BigDecimal getPrice() {
         return price;

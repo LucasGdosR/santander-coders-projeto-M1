@@ -1,3 +1,5 @@
-queijo,10,100
-sal,20,200
-Fiat Uno 2002 ,1,999999
+queijo;10;100
+sal;20;200
+Fiat Uno 2002;1;999999
+Coca-Cola;997;8.52
+Maçã;2;0.88

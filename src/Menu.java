@@ -1,7 +1,5 @@
 import java.math.BigDecimal;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.io.File;
@@ -12,9 +10,9 @@ public class Menu {
     private Database database;
 
     Menu(String filePath){
-        List<Product> products = parseFile(filePath); // parseFile a implementar
+        List<Product> products = parseFile(filePath);
         this.scanner = new Scanner(System.in);
-        this.database = new Database(products);
+        this.database = new Database(products, filePath);
     }
 
     private List<Product> parseFile(String filePath){
@@ -28,7 +26,7 @@ public class Menu {
             {
                 //Transforma a string data em um vetor
                 String data = leitor.nextLine();
-                String[] parts = data.split(",");
+                String[] parts = data.split(";"); // Talvez ; seja melhor, pra não dar pau de usar vírgula no preço
 
                 //Envia o vetor para o Product p
                 Product p = new Product(parts[0],Integer.parseInt(parts[1]),new BigDecimal(parts[2]));
@@ -43,9 +41,6 @@ public class Menu {
             e.printStackTrace();
         }
         System.out.println();
-        // Recebe o caminho para o arquivo, faz uma iteração de todas as linhas,
-        // constrói um produto com cada linha, salva cada produto em um índice de um ArrayList,
-        // retorna o ArrayList
 
         return (stock);
     }
@@ -70,13 +65,14 @@ public class Menu {
                 default -> System.out.println("Opção Inválida.");
             }
         }
-        // finally { scanner.close() }
+        this.scanner.close();
         System.out.println("Obrigado pela sua preferência. Nossa lojinha está sempre de portas abertas :)");
     }
 
     private Product getInput() {
         // Faltando: tratar cada leitura do scanner para certificar que não está vazio / é número positivo
         System.out.println("Informe o nome do produto: ");
+        scanner.nextLine();
         String name = scanner.nextLine();
         // if (name.equals(""))...
         System.out.println("Certo. Qual é o estoque dele? ");
@@ -98,7 +94,7 @@ public class Menu {
         List<Product> products = database.getProducts();
         System.out.println("Estes são os itens: ");
         for (int i = 0; i < products.size(); i++) {
-            System.out.println(products.get(i));
+            System.out.println("ID: " + i + " " + products.get(i));
 
         }
     }
@@ -109,26 +105,29 @@ public class Menu {
         Integer id = scanner.nextInt();
         Product product = getInput();
         database.edit(product, id);
-        System.out.println("Produto editado com sucesso!\nID: " + id + product.toString());
+        System.out.println("Produto editado com sucesso!\nID: " + id + " " + product.toString());
     }
 
     private void deleteProduct(){
         System.out.println("Informe o ID do produto que deseja deletar: ");
         // Checar que é um inteiro, tratar erro de out of bounds index
         Integer id = scanner.nextInt();
-        database.delete((id));
+        database.delete(id);
         System.out.println("Produto deletado com sucesso!");
     }
 
     private void searchProduct(){
         System.out.println("Informe o nome a buscar: ");
+        scanner.nextLine();
         String substring = scanner.nextLine();
         database.search(substring);
         System.out.println("Busca concluída.");
     }
     private void buyProduct(){
         List<Product> shoppingCart = new ArrayList<>();
+        List<Integer> ids = new ArrayList<>();
         boolean buyMore = true;
+        BigDecimal totalOrderPrice = new BigDecimal(0);
         while (buyMore){
             System.out.println("Informe o ID do produto: ");
             // Validar que é um int, tratar erro de out of bounds
@@ -140,17 +139,25 @@ public class Menu {
             if (quantity > product.getQuantity())
                 System.out.printf("Quantidade indisponível. Temos apenas %d unidades em estoque.\n", product.getQuantity());
             else {
-                // Falta pensar melhor neste passo. Vai ter que adicionar o nome, a quantidade, e o preço.
-                // Esta implementação passa o estoque inteiro, e não a quantidade.
-                shoppingCart.add(product);
+                BigDecimal orderPrice = product.getPrice().multiply(BigDecimal.valueOf(quantity));
+                totalOrderPrice = totalOrderPrice.add(orderPrice);
+                shoppingCart.add(new Product(product.getName(), quantity, orderPrice));
+                ids.add(id);
             }
+            System.out.println("Deseja adicionar mais um produto ao carrinho? S/N: ");
+            scanner.nextLine();
+            Character confirm = scanner.nextLine().toLowerCase().charAt(0);
+            if (confirm == 'n') buyMore = false;
         }
         System.out.println("Confirma sua compra? S/N: ");
         Character confirm = scanner.nextLine().toLowerCase().charAt(0);
         if (confirm == 's') {
-            // Precisa pensar melhor como passar para o buy os parâmetros necessários
-            //shoppingCart.forEach(product -> database.buy());
-            // mostre tudo que ele comprou, os preços e o total
-        } else System.out.println("Compra cancelada. ");
+            System.out.println("Você comprou: ");
+            for (int i = 0; i < shoppingCart.size(); i++) {
+                System.out.println(shoppingCart.get(i).toString());
+                database.buy(ids.get(i), shoppingCart.get(i).getQuantity());
+            }
+            System.out.println("Total: R$" + totalOrderPrice);
+        } else System.out.println("Compra cancelada. Trabalhão da porra à toa, hein? ");
     }
 }
