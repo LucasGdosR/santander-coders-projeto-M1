@@ -215,14 +215,20 @@ public class Menu {
                 ids.add(id);
             }
             scanner.nextLine();
-            while (confirm != 's' && confirm != 'n') {
+            while ((confirm != 's') && (confirm != 'n')) {
                 System.out.println("Deseja adicionar mais um produto ao carrinho? S/N: ");
                 confirm = scanner.nextLine().toLowerCase().charAt(0);
-                if (confirm == 'n') buyMore = false;
-                else if (confirm != 's')
-                    System.out.println("Desculpe, não entendi.");
+                if (confirm == 'n') {
+                    buyMore = false;
+                } else if (confirm == 's'){
+                    System.out.println("Beleza! Vamos adicionar mais um.");
+                } else {
+                    System.out.println("Não entendi.");
+                }
             }
-
+            id = -1;
+            quantity = -1;
+            confirm = 'a';
         }
         confirm = 'a';
         while (confirm != 's' && confirm != 'n') {

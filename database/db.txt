@@ -1,5 +1,5 @@
 queijo;10;100
-sal;20;200
-Fiat Uno 2002;1;999999
+sal;18;200
+Fiat Uno 2002;0;999999
 Coca-Cola;997;8.52
-Maçã;2;0.88
+Pepsi;53;78.62
