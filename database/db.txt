@@ -1,6 +1,5 @@
 queijo;10;100
 sal;18;200
 Fiat Uno 2002;0;999999
-Coca-Cola;997;8.52
 Pepsi;53;78.62
 asdf;3;2.0

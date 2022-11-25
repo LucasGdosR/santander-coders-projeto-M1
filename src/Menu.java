@@ -66,6 +66,7 @@ public class Menu {
                 }
             } catch (Exception e) {
                 System.out.println("Opção inválida.");
+                scanner.nextLine();
             }
         }
         this.scanner.close();
@@ -165,6 +166,7 @@ public class Menu {
                 }
             } catch(Exception e) {
                 System.out.println("Informe um número.");
+                scanner.nextLine();
             }
         }
         database.delete(id);
@@ -197,6 +199,7 @@ public class Menu {
                         System.out.println("ID inexistente.");
                 } catch (Exception e) {
                     System.out.println("Digite um número.");
+                    scanner.nextLine();
                 }
             }
             Product product = database.getProducts().get(id);
@@ -208,6 +211,7 @@ public class Menu {
                         System.out.println("Escolha uma quantidade não negativa.");
                 } catch (Exception e) {
                     System.out.println("Digite um número.");
+                    scanner.nextLine();
                 }
             }
             if (quantity > product.getQuantity())
